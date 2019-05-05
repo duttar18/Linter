@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
-
 #include "cppLint.h"
 
 using namespace std;
@@ -30,7 +29,7 @@ struct fileTypeDNE {
             e++;
         }
     }
-    
+
 };
 
 //String Compare
@@ -43,6 +42,7 @@ bool stringComp(const char*a, const char*b){
     return *a==*b;
 }
 
+//find extention of a file
 const char* getExtention(const char* fileName){
     bool hasExtention = false;
     while(*fileName!='\0'){
@@ -60,21 +60,32 @@ const char* getExtention(const char* fileName){
 
 void lint(char fileName[]){
 
+    //read in file
     string input = fileName;
     ifstream inFile;
     inFile.open(input);
+
+    //check if file was correctly opened
     if(!inFile.is_open()){
         throw fileFailure{fileName};
     }
 
-    //ofstream outFile;
+    //create output file
+    string output = input+".lint";
+    ofstream outFile(output);
+
+    //get extention
     const char* extention = getExtention(fileName);
+
+
     if(stringComp(extention,".cpp")){
-        cout<<"hi";
+        cppLint linter;
+        linter.run(inFile,outFile);
     }
     else{
         throw fileTypeDNE{fileName,extention};
     }
+
     inFile.close();
 }
 int main(int argc, char* argv[]){
